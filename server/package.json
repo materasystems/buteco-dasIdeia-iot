@@ -1,9 +1,10 @@
 {
-  "name": "application-name",
+  "name": "buteco-iot",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
     "express": "2.5.8",
+    "ioredis": "^1.15.1",
     "jade": ">= 0.0.1",
     "socket.io": "^1.4.5"
   }
