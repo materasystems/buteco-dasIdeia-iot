@@ -19,7 +19,7 @@ function showPersonCard(user, entrance){
   var $person = $('.person'),
       $chegadas = $('.chegadas-card');
 
-  $person.children('h1.name').html(user.nome);
+  $person.children('div.text').children('h1.name').html(user.nome);
   $person.children('.circle-card').css('background-image', 'url('+ user.image +')');
   $person.children('div.horario').children('pre').html('Chegada: ' + user.horario);
   $chegadas.after($person);
