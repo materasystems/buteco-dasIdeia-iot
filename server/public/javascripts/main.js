@@ -14,6 +14,8 @@
   getEntraceTable();
 })();
 
+var actualTimeouID;
+
 function showPersonCard(user, entrance){
 
   var $person = $('.person'),
@@ -22,12 +24,17 @@ function showPersonCard(user, entrance){
   $person.children('div.text').children('h1.name').html(user.nome);
   $person.children('.circle-card').css('background-image', 'url('+ user.image +')');
   $person.children('div.horario').children('pre').html('Chegada: ' + user.horario);
-  $chegadas.after($person);
-  $chegadas.slideToggle('fast');
-  $person.fadeIn();
-  setTimeout(function() {
-    showEntranceTable(entrance);
-  }, 6000);
+
+  if($chegadas.is(':visible')){
+    $chegadas.after($person);
+    $chegadas.slideToggle('fast');
+    $person.fadeIn();
+  }
+
+  //Evita que a tabela de ultimas entradas apareça antes de ser atualizada
+  clearTimeout(actualTimeouID);
+
+  actualTimeouID = setTimeout(function() {showEntranceTable(entrance);}, 3000);
 }
 
 function showEntranceTable(entrance) {
