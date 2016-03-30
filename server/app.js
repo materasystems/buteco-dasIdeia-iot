@@ -5,6 +5,10 @@
 
 var express = require('express'),
   routes = require('./routes'),
+  Redis = require('ioredis'),
+  config = require('./package.json'),
+  database = require('./database.json'),
+  redis = new Redis(),
   app = module.exports = express.createServer(),
   io = require('socket.io')(app);
 
@@ -27,11 +31,61 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
+//Banco de Dados
+redis.get('version', function (err, result) {
+  if(err || result !== config.version){
+    redis.set('version', config.version);
+    redis.set('chegadas', '[]');
+
+    for(i = 0; i < database.users.length; i++){
+      redis.set(database.users[i].code, JSON.stringify(database.users[i].dados));
+    }
+    console.log('Banco de dados Atualizado');
+  }else{
+      console.log('Banco de dados na versao', result);
+  }
+});
+
 // Routes
 app.get('/', routes.index);
 app.get('/cartao', function (req, res) {
-  io.sockets.emit('cartao', {code: req.query.code});
-  res.json({status: 'ok'});
+
+  redis.get(req.query.code)
+    .then(result =>{
+      var answer = {};
+      redis.get('chegadas').then(r => {
+        var resultJSON = JSON.parse(result);
+        var chegadasJson = JSON.parse(r);
+        resultJSON.horario = getTimeFormated();
+        chegadasJson.push(resultJSON);
+        answer = chegadasJson;
+        redis.set('chegadas', JSON.stringify(answer));
+        io.sockets.emit('cartao',answer);
+        res.json({status: 'ok'});
+      });
+    })
+    .catch(err => (res.json(err)));
+
+});
+
+function getTimeFormated(){
+  var time = '';
+  var date  = new Date();
+  time += date.getHours();
+  time += ':';
+  time += date.getMinutes();
+  time += ':';
+  time += date.getSeconds();
+  return time;
+}
+
+app.get('/chegadas', function (req, res) {
+  redis.get('chegadas')
+    .then(result =>{
+      res.json(JSON.parse(result));
+    })
+    .catch(err => (res.json(err)));
+
 });
 
 app.listen(3000, function(){
