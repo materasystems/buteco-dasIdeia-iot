@@ -1,6 +1,6 @@
-div#sun
-div.card.chegadas-card
-  div.text
+#sun
+.card.chegadas-card
+  .text
     h1 Ultimos a chegar
     table.table.table-bordered.chegadas
       thead
@@ -10,16 +10,16 @@ div.card.chegadas-card
           th Horario
       tbody
         tr
-          th
+          td
             img(src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png")
-          th Luis Gustavo Beligante
-          th 15:00h
-div(style="display:none").card.person
-  div.circle-card
-  div.text
+          td Luis Gustavo Beligante
+          td.moment(data-timestamp="1459351619105") 
+.hide.card.person
+  .circle-card
+  .text
     h4 Bem-Vindo Sr(a)!
     h1.name 
-  div.horario
+  .horario
     pre.horario-chegada
-div#floor
-  div#ocean
+#floor
+  #ocean

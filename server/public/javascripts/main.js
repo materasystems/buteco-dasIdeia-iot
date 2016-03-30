@@ -1,5 +1,6 @@
 (function () {
   var socket = io();
+  moment.locale('pt-BR');
 
   socket.on('connect', function(){
     console.log('connected');
@@ -12,6 +13,9 @@
   });
 
   getEntraceTable();
+
+  updateTime();
+  setInterval(updateTime, 10000); // 10 secs
 })();
 
 var actualTimeouID;
@@ -21,9 +25,9 @@ function showPersonCard(user, entrance){
   var $person = $('.person'),
       $chegadas = $('.chegadas-card');
 
-  $person.children('div.text').children('h1.name').html(user.nome);
+  $person.children('.text .name').html(user.nome);
   $person.children('.circle-card').css('background-image', 'url('+ user.image +')');
-  $person.children('div.horario').children('pre').html('Chegada: ' + user.horario);
+  $person.children('.horario-chegada').html('Chegada: <span data-timestamp="' + user.horario + '"></span>');
 
   if($chegadas.is(':visible')){
     $chegadas.after($person);
@@ -34,13 +38,15 @@ function showPersonCard(user, entrance){
   //Evita que a tabela de ultimas entradas apareça antes de ser atualizada
   clearTimeout(actualTimeouID);
 
-  actualTimeouID = setTimeout(function() {showEntranceTable(entrance);}, 3000);
+  actualTimeouID = setTimeout(function() {
+    showEntranceTable(entrance);
+  }, 3000);
 }
 
 function showEntranceTable(entrance) {
-  var maxLines = 6;
-  var index = entrance.length - 1;
-  var stop;
+  var maxLines = 6,
+    index = entrance.length - 1,
+    stop;
 
   var $person = $('.person'),
       $chegadas = $('.chegadas-card');
@@ -66,24 +72,28 @@ function showEntranceTable(entrance) {
 
 function getTableLine(user) {
   var line = '<tr>';
-  line += '<th>';
+  line += '<td>';
   line += '<img src="' + user.image + '" />';
-  line += '</th>';
-  line += '<th>';
+  line += '</td>';
+  line += '<td>';
   line += user.nome;
-  line += '</th>';
-  line += '<th>';
-  line += user.horario;
-  line += '</th>';
+  line += '</td>';
+  line += '<td data-timestamp="' + user.horario + '">';
+  line += '</td>';
   line += '</tr>';
   return line;
 }
 
 function getEntraceTable(){
-  $.ajax({
-    url: "/chegadas",
-    async:false
-  }).done(function( data ) {
-    showEntranceTable(data);
+  $.ajax({ url: "/chegadas" })
+  .done(showEntranceTable);
+}
+
+function updateTime() {
+  $('[data-timestamp]').each(function (index, element) {
+    var timestamp = $(element).data('timestamp');
+
+    $(element).html( moment(timestamp).fromNow() )
+    .attr('title', moment(timestamp).format('hh:mm:ss'));
   });
 }
