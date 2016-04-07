@@ -25,13 +25,15 @@ function showPersonCard(user, entrance){
   var $person = $('.person'),
       $chegadas = $('.chegadas-card');
 
-  $person.children('.text .name').html(user.nome);
+  $person.children('.text').children('.name').html(user.nome);
   $person.children('.circle-card').css('background-image', 'url('+ user.image +')');
-  $person.children('.horario-chegada').html('Chegada: <span data-timestamp="' + user.horario + '"></span>');
-
+  
   if($chegadas.is(':visible')){
     $chegadas.after($person);
     $chegadas.slideToggle('fast');
+  }
+
+  if(!$person.is(':visible')){
     $person.fadeIn();
   }
 
@@ -66,6 +68,9 @@ function showEntranceTable(entrance) {
   if($person.is(':visible')){
     $person.after($chegadas);
     $person.slideToggle('fast');
+  }
+
+  if(!$chegadas.is(':visible')){
     $chegadas.fadeIn();
   }
 }
