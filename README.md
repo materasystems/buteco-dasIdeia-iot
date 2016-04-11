@@ -1,4 +1,4 @@
-# Buteco-das-Ideias-IoT
+# Buteco Daideias IoT
 
 Este projeto foi desenvolvido para ser apresentado durante o evento do Buteco Dasideia sobre IOT da MATERA Systems
 
