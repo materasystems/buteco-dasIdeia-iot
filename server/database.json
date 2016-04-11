@@ -1,0 +1,8 @@
+{
+"users" : [
+  {
+    "code": "YOUR_CODE_HERE",
+    "dados": { "nome" : "Fulano da Silva", "image" : "/avatars/fulano.jpg"}
+  }
+]
+}
